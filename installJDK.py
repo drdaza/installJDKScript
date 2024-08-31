@@ -25,7 +25,14 @@ def install_jdk_on_windows(jdk_version):
 
     subprocess.run(["curl", "-L", jdk_url, "-o", jdk_file])
 
-    subprocess.run(["start", jdk_file])
+
+    try:
+        subprocess.run(["start", jdk_file], shell=True)
+        print("Ejecutando instalador...")
+    except subprocess.CalledProcessError as e:
+        print(f"Error al ejecutar el instalador: {e}")
+    except FileNotFoundError:
+        print("El archivo no se encontró o no se puede ejecutar.")
 
     jdk_home = os.path.join("C:\\Program Files", f"Java\\jdk-{jdk_version}")
     os.environ["JAVA_HOME"] = jdk_home
