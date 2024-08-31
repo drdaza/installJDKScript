@@ -34,9 +34,9 @@ def install_jdk_on_windows(jdk_version):
     except FileNotFoundError:
         print("El archivo no se encontró o no se puede ejecutar.")
 
-    jdk_home = os.path.join("C:\\Program Files", f"Java\\jdk-{jdk_version}")
-    os.environ["JAVA_HOME"] = jdk_home
-    os.environ["PATH"] = f"{jdk_home}/bin:{os.environ['PATH']}"
+    # jdk_home = os.path.join("C:\\Program Files", f"Java\\jdk-{jdk_version}")
+    # os.environ["JAVA_HOME"] = jdk_home
+    # os.environ["PATH"] = f"{jdk_home}/bin:{os.environ['PATH']}"
     set_environment_variables(jdk_version)
     
 
@@ -55,10 +55,20 @@ def install_maven_on_windows(maven_version="3.8.8"):
     maven_url = f"https://dlcdn.apache.org/maven/maven-3/{maven_version}/apache-maven-{maven_version}-bin.zip"
     maven_file = f"apache-maven-{maven_version}-bin.zip"
 
+    try:
+        subprocess.run(["curl", "-L", maven_url, "-o", maven_file])
+    except Exception as e:
+        print(f"Error downloading Maven: {e}")
+        return
 
-    subprocess.run(["curl", "-L", maven_url, "-o", maven_file])  
+    try:
+        subprocess.run(["unzip", maven_file, "-d", f"apache-maven-{maven_version}-bin"])
+    except Exception as e:
+        print(f"Error unpacking Maven archive: {e}")
+        return
+    # subprocess.run(["curl", "-L", maven_url, "-o", maven_file])  
 
-    subprocess.run(["unzip", maven_file, "-d", f"apache-maven-{maven_version}"])
+    # subprocess.run(["unzip", maven_file, "-d", f"apache-maven-{maven_version}"])
 
 
     maven_home = os.path.join(os.environ["USERPROFILE"], ".m2", f"apache-maven-{maven_version}")
