@@ -4,7 +4,7 @@ import subprocess
 import sys
 import zipfile
 
-def install_jdk(platform, jdk_version = "17"): 
+def install_jdk(platform, jdk_version = "17", maven_version="3.8.8"): 
     if (platform == "linux"):
         try:
          install_jdk_on_linux(jdk_version)
@@ -17,7 +17,8 @@ def install_jdk(platform, jdk_version = "17"):
             if not os.path.exists(f"C:\\Program Files\\Java\\jdk-{jdk_version}"):
                 install_jdk_on_windows(jdk_version)
             set_environment_variables_on_windows(jdk_version)
-            install_maven_on_windows()
+            if not os.path.exists(f"C:\\Program Files\\apache-maven\\apache-maven-{maven_version}"): 
+                install_maven_on_windows()
         except Exception as e:
             print(f"An error occurred: {e}")
             sys.exit(1)
@@ -83,7 +84,8 @@ def install_maven_on_windows(maven_version="3.8.8"):
 
     # subprocess.run(["unzip", maven_file, "-d", f"apache-maven-{maven_version}"])
 
-    if not os.environ['MAVEN_HOME']:
+    exixst_maven_home = False
+    if exixst_maven_home == True:
         maven_home = f"C:\\Program Files\\apache-maven\\apache-maven-{maven_version}"
         # os.environ["MAVEN_HOME"] = maven_home
         # os.environ["PATH"] = f"{maven_home}/bin:{os.environ['PATH']}"
@@ -130,7 +132,6 @@ def set_environment_variables(jdk_version):
 
 
 def set_environment_variables_on_windows(jdk_version): 
-    if not os.environ['JAVA_HOME']:
         jdk_home = f"C:\\Program Files\\Java\\jdk-{jdk_version}"
         print(jdk_home)
         java_home_set_command = ["setx", "JAVA_HOME", jdk_home]
