@@ -23,7 +23,11 @@ def install_jdk_on_windows(jdk_version):
     jdk_url = f"https://download.oracle.com/java/{jdk_version}/latest/jdk-{jdk_version}_windows-x64_bin.exe"
     jdk_file = f"jdk-{jdk_version}_windows-x64_bin.exe"
 
-    subprocess.run(["curl", "-L", jdk_url, "-o", jdk_file])
+    if not os.path.exists(jdk_file):
+        subprocess.run(["curl", "-L", jdk_url, "-o", jdk_file])
+        print(f"JDK descargado: {jdk_file}")
+    else:
+        print(f"El archivo {jdk_file} ya existe. Saltando descarga.")
 
 
     try:
@@ -55,11 +59,16 @@ def install_maven_on_windows(maven_version="3.8.8"):
     maven_url = f"https://dlcdn.apache.org/maven/maven-3/{maven_version}/apache-maven-{maven_version}-bin.zip"
     maven_file = f"apache-maven-{maven_version}-bin.zip"
 
-    try:
-        subprocess.run(["curl", "-L", maven_url, "-o", maven_file])
-    except Exception as e:
-        print(f"Error downloading Maven: {e}")
-        return
+    if not os.path.exists(maven_file):
+        try:
+            subprocess.run(["curl", "-L", maven_url, "-o", maven_file])
+        except Exception as e:
+            print(f"Error downloading Maven: {e}")
+            return
+    else:
+        print(f"El archivo {maven_file} ya existe. Saltando descarga.")
+
+    
 
     try:
         subprocess.run(["unzip", maven_file, "-d", f"apache-maven-{maven_version}-bin"])
