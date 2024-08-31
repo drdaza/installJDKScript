@@ -20,9 +20,8 @@ def install_jdk(platform, jdk_version = "17"):
             sys.exit(1)
 
 def install_jdk_on_windows(jdk_version):    
-     	
-    jdk_url = f"https://download.oracle.com/java/{jdk_version}/latest/jdk-{jdk_version}_windows-x64_bin.zip"
-    jdk_file = f"jdk-{jdk_version}_windows-x64.exe"
+    jdk_url = f"https://download.oracle.com/java/{jdk_version}/latest/jdk-{jdk_version}_windows-x64_bin.exe"
+    jdk_file = f"jdk-{jdk_version}_windows-x64_bin.exe"
 
     subprocess.run(["curl", "-L", jdk_url, "-o", jdk_file])
 
