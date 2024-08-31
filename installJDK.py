@@ -45,8 +45,8 @@ def install_jdk_on_linux(jdk_version, linux_distro = "ubuntu"):
         set_environment_variables(jdk_version)
 
 
-def install_maven_on_windows(maven_version="3.8.7"):
-    maven_url = f"https://dlcdn.apache.org/maven/maven-{maven_version}/apache-maven-{maven_version}-bin.zip"
+def install_maven_on_windows(maven_version="3.8.8"):
+    maven_url = f"https://dlcdn.apache.org/maven/maven-3/{maven_version}/apache-maven-{maven_version}-bin.zip"
     maven_file = f"apache-maven-{maven_version}-bin.zip"
 
 
