@@ -43,7 +43,7 @@ def install_jdk_on_windows(jdk_version):
     # jdk_home = os.path.join("C:\\Program Files", f"Java\\jdk-{jdk_version}")
     # os.environ["JAVA_HOME"] = jdk_home
     # os.environ["PATH"] = f"{jdk_home}/bin:{os.environ['PATH']}"
-    set_environment_variables(jdk_version)
+    set_environment_variables_on_windows(jdk_version)
     
 
 def install_jdk_on_linux(jdk_version, linux_distro = "ubuntu"): 
@@ -73,7 +73,8 @@ def install_maven_on_windows(maven_version="3.8.8"):
     
 
     try:
-        subprocess.run(["unzip", maven_file, "-d", f"apache-maven-{maven_version}-bin"])
+        extract_zip(maven_file, f"C:\\Program Files\\apache-maven\\apache-maven-{maven_version}")
+        # subprocess.run(["unzip", maven_file, "-d", f"apache-maven-{maven_version}-bin"])
     except Exception as e:
         print(f"Error unpacking Maven archive: {e}")
         return
@@ -82,9 +83,19 @@ def install_maven_on_windows(maven_version="3.8.8"):
     # subprocess.run(["unzip", maven_file, "-d", f"apache-maven-{maven_version}"])
 
 
-    maven_home = os.path.join(os.environ["USERPROFILE"], ".m2", f"apache-maven-{maven_version}")
-    os.environ["MAVEN_HOME"] = maven_home
-    os.environ["PATH"] = f"{maven_home}/bin:{os.environ['PATH']}"
+    maven_home = f"C:\\Program Files\\apache-maven\\apache-maven-{maven_version}"
+    # os.environ["MAVEN_HOME"] = maven_home
+    # os.environ["PATH"] = f"{maven_home}/bin:{os.environ['PATH']}"
+    maven_home_set_command = ["setx", "MAVEN_HOME", maven_home]
+    path_update_command = ["setx", "PATH", f"{maven_home}/bin;%{os.environ['PATH']}"]
+
+
+    try:
+        subprocess.run(maven_home_set_command, check=True)
+        subprocess.run(path_update_command, check=True)
+        print("Variables de entorno establecidas con éxito.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error al establecer las variables de entorno: {e}")
     # maven_url = "https://dlcdn.apache.org/maven/maven-3.8.7/apache-maven-3.8.7-bin.zip"
     # maven_file = "apache-maven-3.8.7-bin.zip"
     # subprocess.run(["wget", maven_url, "-O", maven_file])
@@ -116,6 +127,33 @@ def set_environment_variables(jdk_version):
     os.environ["JAVA_HOME"] = jdk_home
     os.environ["PATH"] = f"{jdk_home}/bin:{os.environ['PATH']}"    
 
+
+def set_environment_variables_on_windows(jdk_version): 
+    jdk_home = f"C:\\Program Files\\Java\\jdk-{jdk_version}"
+    print(jdk_home)
+    java_home_set_command = ["setx", "JAVA_HOME", jdk_home]
+    path_update_command = ["setx", "PATH", f"{jdk_home}/bin;%{os.environ['PATH']}"]
+
+
+    try:
+        subprocess.run(java_home_set_command, check=True)
+        subprocess.run(path_update_command, check=True)
+        print("Variables de entorno establecidas con éxito.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error al establecer las variables de entorno: {e}")
+
+def extract_zip(zip_file, destination):
+    try:
+        with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+            zip_ref.extractall(destination)
+    except zipfile.BadZipfile:
+        print("El archivo ZIP está corrupto.")
+    except FileNotFoundError:
+        print("El archivo ZIP o la carpeta de destino no existe.")
+    except PermissionError:
+        print("No tienes permisos suficientes para descomprimir el archivo.")
+    except Exception as e:
+        print(f"Ocurrió un error inesperado: {e}")
 def main():
     platformToLowerCase = platform.system().lower()
     install_jdk(platformToLowerCase)
