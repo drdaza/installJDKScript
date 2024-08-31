@@ -16,6 +16,7 @@ def install_jdk(platform, jdk_version = "17"):
         try:
             if not os.path.exists(f"C:\\Program Files\\Java\\jdk-{jdk_version}"):
                 install_jdk_on_windows(jdk_version)
+            set_environment_variables_on_windows(jdk_version)
             install_maven_on_windows()
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -43,7 +44,7 @@ def install_jdk_on_windows(jdk_version):
     # jdk_home = os.path.join("C:\\Program Files", f"Java\\jdk-{jdk_version}")
     # os.environ["JAVA_HOME"] = jdk_home
     # os.environ["PATH"] = f"{jdk_home}/bin:{os.environ['PATH']}"
-    set_environment_variables_on_windows(jdk_version)
+    
     
 
 def install_jdk_on_linux(jdk_version, linux_distro = "ubuntu"): 
@@ -82,12 +83,12 @@ def install_maven_on_windows(maven_version="3.8.8"):
 
     # subprocess.run(["unzip", maven_file, "-d", f"apache-maven-{maven_version}"])
 
-
-    maven_home = f"C:\\Program Files\\apache-maven\\apache-maven-{maven_version}"
-    # os.environ["MAVEN_HOME"] = maven_home
-    # os.environ["PATH"] = f"{maven_home}/bin:{os.environ['PATH']}"
-    maven_home_set_command = ["setx", "MAVEN_HOME", maven_home]
-    path_update_command = ["setx", "PATH", f"{maven_home}/bin;%{os.environ['PATH']}"]
+    if not os.environ['MAVEN_HOME']:
+        maven_home = f"C:\\Program Files\\apache-maven\\apache-maven-{maven_version}"
+        # os.environ["MAVEN_HOME"] = maven_home
+        # os.environ["PATH"] = f"{maven_home}/bin:{os.environ['PATH']}"
+        maven_home_set_command = ["setx", "MAVEN_HOME", maven_home]
+        path_update_command = ["setx", "PATH", f"{maven_home}/bin;%{os.environ['PATH']}"]
 
 
     try:
@@ -129,18 +130,19 @@ def set_environment_variables(jdk_version):
 
 
 def set_environment_variables_on_windows(jdk_version): 
-    jdk_home = f"C:\\Program Files\\Java\\jdk-{jdk_version}"
-    print(jdk_home)
-    java_home_set_command = ["setx", "JAVA_HOME", jdk_home]
-    path_update_command = ["setx", "PATH", f"{jdk_home}/bin;%{os.environ['PATH']}"]
+    if not os.environ['JAVA_HOME']:
+        jdk_home = f"C:\\Program Files\\Java\\jdk-{jdk_version}"
+        print(jdk_home)
+        java_home_set_command = ["setx", "JAVA_HOME", jdk_home]
+        path_update_command = ["setx", "PATH", f"{jdk_home}/bin;%{os.environ['PATH']}"]
 
 
-    try:
-        subprocess.run(java_home_set_command, check=True)
-        subprocess.run(path_update_command, check=True)
-        print("Variables de entorno establecidas con éxito.")
-    except subprocess.CalledProcessError as e:
-        print(f"Error al establecer las variables de entorno: {e}")
+        try:
+            subprocess.run(java_home_set_command, check=True)
+            subprocess.run(path_update_command, check=True)
+            print("Variables de entorno establecidas con éxito.")
+        except subprocess.CalledProcessError as e:
+            print(f"Error al establecer las variables de entorno: {e}")
 
 def extract_zip(zip_file, destination):
     try:
