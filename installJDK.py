@@ -14,7 +14,7 @@ def install_jdk(platform, jdk_version = "17"):
         install_maven_on_linux()
     if (platform == "windows"):
         try:
-            if not os.path.exists(f"C:\\Program Files\Java\jdk-{jdk_version}"):
+            if not os.path.exists(f"C:\\Program Files\\Java\\jdk-{jdk_version}"):
                 install_jdk_on_windows(jdk_version)
             install_maven_on_windows()
         except Exception as e:
@@ -58,7 +58,7 @@ def install_jdk_on_linux(jdk_version, linux_distro = "ubuntu"):
 
 
 def install_maven_on_windows(maven_version="3.8.8"):
-    maven_url = f"https://dlcdn.apache.org/maven/maven-3/{maven_version}/apache-maven-{maven_version}-bin.zip"
+    maven_url = f"https://dlcdn.apache.org/maven/maven-3/{maven_version}/binaries/apache-maven-{maven_version}-bin.zip"
     maven_file = f"apache-maven-{maven_version}-bin.zip"
 
     if not os.path.exists(maven_file):
@@ -73,8 +73,7 @@ def install_maven_on_windows(maven_version="3.8.8"):
     
 
     try:
-        extract_zip(maven_file, f"C:\\Usuarios\{os.environ["USERPROFILE"]}\apache-maven-{maven_version}")
-        # subprocess.run(["unzip", maven_file, "-d", f"apache-maven-{maven_version}-bin"])
+        subprocess.run(["unzip", maven_file, "-d", f"apache-maven-{maven_version}-bin"])
     except Exception as e:
         print(f"Error unpacking Maven archive: {e}")
         return
@@ -96,18 +95,6 @@ def install_maven_on_windows(maven_version="3.8.8"):
     # os.environ["MAVEN_HOME"] = maven_home
     # os.environ["PATH"] = f"{maven_home}/bin:{os.environ['PATH']}"
 
-def extract_zip(zip_file, destination):
-    try:
-        with zipfile.ZipFile(zip_file, 'r') as zip_ref:
-            zip_ref.extractall(destination)
-    except zipfile.BadZipfile:
-        print("El archivo ZIP está corrupto.")
-    except FileNotFoundError:
-        print("El archivo ZIP o la carpeta de destino no existe.")
-    except PermissionError:
-        print("No tienes permisos suficientes para descomprimir el archivo.")
-    except Exception as e:
-        print(f"Ocurrió un error inesperado: {e}")
 
 
 
