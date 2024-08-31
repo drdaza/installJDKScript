@@ -14,7 +14,7 @@ def install_jdk(platform, jdk_version = "17"):
         install_maven_on_linux()
     if (platform == "windows"):
         try:
-            if not os.path.exists(f"C:\Program Files\Java\jdk-{jdk_version}"):
+            if not os.path.exists(f"C:\\Program Files\Java\jdk-{jdk_version}"):
                 install_jdk_on_windows(jdk_version)
             install_maven_on_windows()
         except Exception as e:
