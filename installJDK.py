@@ -13,11 +13,12 @@ def install_jdk(platform, jdk_version = "17", maven_version="3.8.8"):
             sys.exit(1)
         install_maven_on_linux()
     if (platform == "windows"):
+        can_set_environment = False 
         try:
             if not os.path.exists(f"C:\\Program Files\\Java\\jdk-{jdk_version}"):
                 install_jdk_on_windows(jdk_version)
             if not os.path.exists(f"C:\\Program Files\\apache-maven\\apache-maven-{maven_version}"): 
-                install_maven_on_windows()
+                install_maven_on_windows(maven_version)
             set_environment_variables_on_windows(jdk_version, maven_version)
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -41,11 +42,6 @@ def install_jdk_on_windows(jdk_version):
         print(f"Error running the installer: {e}")
     except FileNotFoundError:
         print("The file was not found or cannot be executed.")
-
-    # jdk_home = os.path.join("C:\\Program Files", f"Java\\jdk-{jdk_version}")
-    # os.environ["JAVA_HOME"] = jdk_home
-    # os.environ["PATH"] = f"{jdk_home}/bin:{os.environ['PATH']}"
-    
     
 
 def install_jdk_on_linux(jdk_version, linux_distro = "ubuntu"): 
@@ -76,40 +72,13 @@ def install_maven_on_windows(maven_version="3.8.8"):
     
 
     try:
-        extract_zip(maven_file, f"C:\\Program Files\\apache-maven\\apache-maven-{maven_version}")
+        # fixed maven path 
+        extract_zip(maven_file, f"C:\\Program Files\\apache-maven")
+        # extract_zip(maven_file, f"C:\\Program Files\\apache-maven\\apache-maven-{maven_version}")
         # subprocess.run(["unzip", maven_file, "-d", f"apache-maven-{maven_version}-bin"])
     except Exception as e:
         print(f"Error unpacking Maven archive: {e}")
         return
-    # subprocess.run(["curl", "-L", maven_url, "-o", maven_file])  
-
-    # subprocess.run(["unzip", maven_file, "-d", f"apache-maven-{maven_version}"])
-
-    # exixst_maven_home = False
-    # if exixst_maven_home == True:
-    #     maven_home = f"C:\\Program Files\\apache-maven\\apache-maven-{maven_version}"
-    #     # os.environ["MAVEN_HOME"] = maven_home
-    #     # os.environ["PATH"] = f"{maven_home}/bin:{os.environ['PATH']}"
-    #     maven_home_set_command = ["setx", "MAVEN_HOME", maven_home]
-    #     path_update_command = ["setx", "PATH", f"{maven_home}/bin;%{os.environ['PATH']}"]
-
-
-    # try:
-    #     subprocess.run(maven_home_set_command, check=True)
-    #     subprocess.run(path_update_command, check=True)
-    #     print("Variables de entorno establecidas con éxito.")
-    # except subprocess.CalledProcessError as e:
-    #     print(f"Error al establecer las variables de entorno: {e}")
-    # maven_url = "https://dlcdn.apache.org/maven/maven-3.8.7/apache-maven-3.8.7-bin.zip"
-    # maven_file = "apache-maven-3.8.7-bin.zip"
-    # subprocess.run(["wget", maven_url, "-O", maven_file])
-
-    # subprocess.run(["unzip", maven_file, "-d", "apache-maven-3.8.7"])
-
-    # maven_home = "C:\\apache-maven-3.8.7"
-    # os.environ["MAVEN_HOME"] = maven_home
-    # os.environ["PATH"] = f"{maven_home}/bin:{os.environ['PATH']}"
-
 
 
 
